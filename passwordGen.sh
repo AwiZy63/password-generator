@@ -72,7 +72,7 @@ read -p "Souhaitez vous enregistrer le mot de passe généré dans un fichier ? 
 case $createPwFile in
 	y|Y|o|O)
 		pwFileName="pwFile"
-		read -p "Renseignez le nom du fichier. " pwFileName
+		read -p "Renseignez le nom du fichier : " pwFileName
 		generatedPasswordFile="${pwFileName}.pw"
 		if [[ $totalPwGenerate == 1 ]]; then
 			echo -e "\nUne copie du mot de passe a été effectuée dans le fichier ${generatedPasswordFile} \n"
@@ -115,15 +115,10 @@ sleep 1.5
 
 # Création du fichier de stockage de mot de passe généré.
 
-#pwgen $totalPwLenght $totalPwGenerate > $generatedPasswordFile
-
-
-##################################################################################
-# Si le nombre total de mot de passe à générer est égal à 1,                     #
-# alors mettre la phrase au singulier et afficher le mot de passe généré,        #
-# sinon afficher la phrase au pluriel et afficher les mots de passe généré.      #
-##################################################################################
-
 sleep 1
 
-echo -e "\nGénération du mot de passe terminé \n"
+if [[ $totalPwGenerate == 1 ]]; then
+	echo -e "\nGénération du mot de passe terminé \n"
+else
+	echo -e "\nGénération des ${totalPwGenerate} mots de passe terminé \n"
+fi
