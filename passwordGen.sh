@@ -1,10 +1,10 @@
 #!/bin/bash
 
-clear
-
 ################################
 # Installation des dépendances #
 ################################
+
+clear
 
 read -p "Voulez vous installer les dépendences ? [O/N]  " depInstall
 
