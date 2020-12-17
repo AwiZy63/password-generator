@@ -71,9 +71,17 @@ read -p "Souhaitez vous enregistrer le mot de passe généré dans un fichier ? 
 
 case $createPwFile in
 	y|Y|o|O)
-		pwFileName="pwFile"
+		#pwFileName="pwFile"
 		read -p "Renseignez le nom du fichier : " pwFileName
-		generatedPasswordFile="${pwFileName}.pw"
+		
+		# Si le champ du nom de fichier est vide alors le nom de base sera pwFile
+		if [[ pwFileName == "" ]]; then
+			finalPwFileName="pwFile"
+		else
+			finalPwFileName=$pwFileName
+		fi
+
+		generatedPasswordFile="${finalPwFileName}.pw"
 		if [[ $totalPwGenerate == 1 ]]; then
 			echo -e "\nUne copie du mot de passe a été effectuée dans le fichier ${generatedPasswordFile} \n"
 		else
