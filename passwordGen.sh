@@ -6,16 +6,16 @@
 
 clear
 
-read -p "Voulez vous installer les dépendences ? [O/N]  " depInstall
 
-case $depInstall in 
-	y|Y|o|O) 
-		sudo apt-get install pwgen
-		echo -e "\n Installation des paquets necessaire terminé \n"
-		sleep 2
-		clear
-	;;
-esac
+# Vérifier si la dépendence est installée ou non
+if [[ ! -e /usr/bin/pwgen ]]; then
+	echo -e "\nInstallation des dépendences en cours.. \n"
+	sleep 1
+	sudo apt-get install pwgen
+	echo -e "\nInstallation des paquets necessaire terminé \n"
+	sleep 2
+	clear
+fi
 
 ##############################
 # Generation du mot de passe #
@@ -38,6 +38,21 @@ case $pwLenght in
 		fi
         ;;
 esac	
+
+################################################
+# Le mot de passe doit contenir des symboles ? #
+################################################
+
+read -p "Votre mot de passe doit comporter des symboles ? [O/N] " needSymbols
+
+case $needSymbols in
+	[yY][eE][sS] | [yY] | [oO][uU][iI] | [oO])
+		containSymbols=true
+	;;
+	*)
+		containSymbols=false
+	;;
+esac
 
 ####################################
 # Nombre de mot de passe à générer #
@@ -70,7 +85,7 @@ sleep 1.5
 read -p "Souhaitez vous enregistrer le mot de passe généré dans un fichier ? [O/N] " createPwFile
 
 case $createPwFile in
-	y|Y|o|O)
+	[yY][eE][sS] | [yY] | [oO][uU][iI] | [oO])
 		#pwFileName="pwFile"
 		read -p "Renseignez le nom du fichier : " pwFileName
 		
@@ -92,7 +107,12 @@ case $createPwFile in
 		touch $generatedPasswordFile
 
 		# Generation du mot de passe avec les paramètres de l'utilisateur
-		pwgen $totalPwLenght $totalPwGenerate > $generatedPasswordFile
+                if [[ $containSymbols == true ]]; then
+                        pwgen -y -B $totalPwLenght $totalPwGenerate > $generatedPasswordFile
+                else
+                        pwgen $totalPwLenght $totalPwGenerate > $generatedPasswordFile
+                fi
+
 		sleep 1.5
 
 		if [[ $totalPwGenerate == 1 ]]; then
@@ -112,14 +132,14 @@ case $createPwFile in
                 fi
 		
 		# Generation et affichage direct du mot de passe généré avec les paramètres de l'utilisateur
-		pwgen $totalPwLenght $totalPwGenerate
-		sleep 1.5
+		if [[ $containSymbols == true ]]; then
+			pwgen -y -B $totalPwLenght $totalPwGenerate
+		else
+			pwgen $totalPwLenght $totalPwGenerate
+		fi
+		sleep 1
 	;;
 esac
-
-
-
-sleep 1.5
 
 # Création du fichier de stockage de mot de passe généré.
 
